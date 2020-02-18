@@ -4,6 +4,8 @@ const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
 
+
+// function to generate random string for short URL. Call it where necessary. 
 function generateRandomString() {
 
     var result           = '';
@@ -25,6 +27,7 @@ const urlDatabase = {
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+// These are all routes below.
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -58,6 +61,8 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+
+// call randomString to generate short URL
 
 app.post("/urls", (req, res) => {
   let randomString = generateRandomString();

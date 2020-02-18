@@ -21,7 +21,6 @@ function generateRandomString() {
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
-
 };
 
 const bodyParser = require("body-parser");
@@ -62,19 +61,22 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 
-// call randomString to generate short URL
-
 app.post("/urls", (req, res) => {
+  // call randomString to generate short URL
   let randomString = generateRandomString();
   urlDatabase[randomString] = req.body.longURL;
   res.redirect('/urls/' + randomString); 
 });
 
-app.post("/urls", (req, res) => {
-  let randomString = generateRandomString();
-  urlDatabase[randomString] = req.body.shortURL;
-  res.redirect('/urls/' + randomString); 
+
+// redirects after delete
+app.post("/urls/:shortURL/delete", (req, res) => {
+  let {shortURL} = req.params;
+  delete urlDatabase[shortURL];
+
+  res.redirect('/urls'); 
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

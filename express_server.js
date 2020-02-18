@@ -53,12 +53,22 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  let {longURL} = req.params.longURL;
+  res.redirect(longURL);
+});
+
+
 app.post("/urls", (req, res) => {
   let randomString = generateRandomString();
   urlDatabase[randomString] = req.body.longURL;
-  res.redirect('/urls/' + randomString);
-  
-  
+  res.redirect('/urls/' + randomString); 
+});
+
+app.post("/urls", (req, res) => {
+  let randomString = generateRandomString();
+  urlDatabase[randomString] = req.body.shortURL;
+  res.redirect('/urls/' + randomString); 
 });
 
 app.listen(PORT, () => {

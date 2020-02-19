@@ -26,16 +26,14 @@ const users = {
 
 // function to generate random string for short URL. Call it where necessary. 
 function generateRandomString() {
-
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     for ( var i = 0; i < 6; i++ ) {
        result += characters.charAt(Math.floor(Math.random() * 62));
     }
     return result;
-    
  }
- 
+
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -89,17 +87,26 @@ app.get("/register", (req, res) => {
 
 // Posts below
 
-app.post('/register', (req, res) => {
-  // if (req.body.email && req.body.password) {
-    let id = generateRandomString();
-    users[id] = {id: id, email: req.body.email, password: req.body.password};
-      // users[req.body.id] = newUser;
-      res.cookie("user_id", id);
-      res.redirect('/urls/');
-  // } else {
-  //   res.status(400);
-  //   res.send('Try again');
-  // }
+
+// Register with unique id, check for unique email, add new user
+app.post("/register", (req, res) => {
+  if (req.body.email === "" || req.body.password === "") {
+    res.status(400);
+    res.send("Please enter email AND password to proceed.");
+    res.redirect("/register");
+  }
+
+  for (const user in users) {
+    if (users[user]["email"] === req.body.email) {
+      res.status(400);
+      res.send("Please enter a unique email.");
+      res.redirect("/urls");
+    }
+  }
+  let id = generateRandomString();
+  users[id] = { id: id, email: req.body.email, password: req.body.password };
+  res.cookie("user_id", id);
+  res.redirect("/urls/");
 });
 
 // redirects after edit 

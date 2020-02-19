@@ -13,11 +13,21 @@
       </div> <!-- Add the user and button -->
       <div class="form-group mb-2">
     </div>
+    <!-- condition statement to render if user name is applied or not-->
+  <% if(!username){ %>
     <form style="padding:10px" action="/login" method="POST">
-        <input style="width:200px" type="text" name="username" placeholder="JimBob32"
-         id="username">
-        <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+      <input style="width:200px" type="text" name="username" placeholder="Username"
+       id="username">
+      <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+ <% } else { %>
+  <form style="padding:10px" action="/logout" method="POST">
+    <div>
+      <%= username %> 
+    </div>
+    <button type="Logout" class="btn btn-primary">Logout</button>
+</form>
+  <% } %>
   </nav>
 </header>
 

@@ -11,6 +11,19 @@ const templateVars = {
 username: ""
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+};
+
 // function to generate random string for short URL. Call it where necessary. 
 function generateRandomString() {
 
@@ -23,7 +36,6 @@ function generateRandomString() {
     
  }
  
-
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -69,6 +81,27 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/register", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  res.render("register", email, password);
+});
+
+// Posts below
+
+app.post('/register', (req, res) => {
+  // if (req.body.email && req.body.password) {
+    let id = generateRandomString();
+    users[id] = {id: id, email: req.body.email, password: req.body.password};
+      // users[req.body.id] = newUser;
+      res.cookie("user_id", id);
+      res.redirect('/urls/');
+  // } else {
+  //   res.status(400);
+  //   res.send('Try again');
+  // }
+});
+
 // redirects after edit 
 app.post("/urls/:id", (req, res) => {
   let id = req.params.id;
@@ -92,8 +125,9 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
-  res.redirect('/urls'); 
+  res.redirect('/urls');
 });
+
 
 //redirects after logout
 app.post("/logout", (req, res) => {

@@ -83,7 +83,6 @@ app.post("/urls", (req, res) => {
   res.redirect('/urls/' + randomString); 
 });
 
-
 // redirects after delete
 app.post("/urls/:shortURL/delete", (req, res) => {
   let {shortURL} = req.params;
@@ -96,6 +95,7 @@ app.post("/login", (req, res) => {
   res.redirect('/urls'); 
 });
 
+//redirects after logout
 app.post("/logout", (req, res) => {
   res.clearCookie('username', req.body.username);
   res.redirect('/urls'); 

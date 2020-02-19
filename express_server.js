@@ -1,8 +1,10 @@
 const express = require("express");
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
+app.use(cookieParser());
 
 
 // function to generate random string for short URL. Call it where necessary. 
@@ -79,6 +81,11 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   let {shortURL} = req.params;
   delete urlDatabase[shortURL];
+  res.redirect('/urls'); 
+});
+
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
   res.redirect('/urls'); 
 });
 

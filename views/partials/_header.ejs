@@ -10,8 +10,14 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-      </div>
+      </div> <!-- Add the user and button -->
+      <div class="form-group mb-2">
     </div>
+    <form style="padding:10px" action="/login" method="POST">
+        <input style="width:200px" type="text" name="username" placeholder="JimBob32"
+         id="username">
+        <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
   </nav>
 </header>
 

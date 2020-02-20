@@ -15,10 +15,15 @@
     </div>
     <!-- condition statement to render if user name is applied or not-->
     <% if(true){ %> <!-- change back to !username-->
-      <form style="padding:10px" action="/login" method="POST">
-        <input style="width:200px" type="text" name="username" placeholder="Username"
-        id="username">
-        <button type="submit" class="btn btn-primary">Submit</button>
+      <form style="padding:10px" action="/register" method="GET">
+        <div>
+        </div>
+        <button type="Register" class="btn btn-primary">Register</button>
+      </form>
+      <form style="padding:10px" action="/logins" method="GET">
+        <div>
+        </div>
+        <button type="Login" class="btn btn-primary">Login</button>
       </form>
     <% } else { %>
       <form style="padding:10px" action="/logout" method="POST">

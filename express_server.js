@@ -61,13 +61,13 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let id =  req.cookies["user_id"]
-  let templateVars = { urls: urlDatabase, username: users[id]['email']};
+  let templateVars = { urls: urlDatabase, username: users[id]};
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls", (req, res) => {
   let id =  req.cookies["user_id"]
-  let templateVars = { urls: urlDatabase, username: users[id]['email']};
+  let templateVars = { urls: urlDatabase, username: users[id]};
   res.render("urls_index", templateVars);
 });
 
@@ -75,7 +75,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let id =  req.cookies["user_id"]
   let {shortURL} = req.params;
   let templateVars = { shortURL, longURL: urlDatabase[shortURL],  
-    username: users[id]['email']};
+    username: users[id]};
   res.render("urls_show", templateVars);
 });
 
@@ -88,6 +88,12 @@ app.get("/register", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
   res.render("register", email, password);
+});
+
+app.get("/logins", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  res.render("logins", email, password);
 });
 
 // Posts below
@@ -136,11 +142,22 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/login", (req, res) => {
   for (const user in users) {
-    if (users[user]["email"] === req.body.email)  {
-      res.cookie('user_id', user);
+    if (users[user]["email"] !== req.body.email) {
+      res.status(403);
+      res.send("Email cannot be found");
+    }
+    if (
+      users[user]["email"] === req.body.email &&
+      users[user]["password"] !== req.body.password
+    ) {
+      res.status(403);
+      res.send("Password does not match");
+    }
+    if (users[user]["email"] === req.body.email) {
+      res.cookie("user_id", user);
     }
   }
-  res.redirect('/urls');
+  res.redirect("/urls");
 });
 
 //redirects after logout

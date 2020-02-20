@@ -11,36 +11,34 @@ app.use(cookieParser());
 // username: ""
 // };
 
-const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   }
 };
 
 // function to generate random string for short URL. Call it where necessary. 
 function generateRandomString() {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for ( var i = 0; i < 6; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * 62));
-    }
-    return result;
- }
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (var i = 0; i < 6; i++) {
+    result += characters.charAt(Math.floor(Math.random() * 62));
+  }
+  return result;
+}
 
-
-
-
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+ const urlDatabase = {
+   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+ };
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -63,8 +61,10 @@ app.get("/urls/new", (req, res) => {
   let templateVars = { username: ""};
   if (req.cookies["user_id"]) {
   templateVars = { urls: urlDatabase, username: users[req.cookies["user_id"]]};
-}
   res.render("urls_new", templateVars);
+} else {
+  res.redirect("/logins");
+}
 });
 
 app.get("/urls", (req, res) => {
@@ -97,9 +97,8 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
-  res.render("register", email, password);
+  let templateVars = { username: ""};
+  res.render("register", templateVars);
 });
 
 app.get("/logins", (req, res) => {
@@ -108,8 +107,6 @@ app.get("/logins", (req, res) => {
 });
 
 // Posts below
-
-
 // Register with unique id, check for unique email, add new user
 app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {

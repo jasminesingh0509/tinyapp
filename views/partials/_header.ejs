@@ -14,7 +14,7 @@
       <div class="form-group mb-2">
     </div>
     <!-- condition statement to render if user name is applied or not-->
-    <% if(true){ %> <!-- change back to !username-->
+    <% if(!username["email"]){ %> <!-- change back to !username-->
       <form style="padding:10px" action="/register" method="GET">
         <div>
         </div>
@@ -28,7 +28,7 @@
     <% } else { %>
       <form style="padding:10px" action="/logout" method="POST">
         <div>
-          <%= user.email %> 
+          <%= username["email"] %> 
         </div>
         <button type="Logout" class="btn btn-primary">Logout</button>
       </form>

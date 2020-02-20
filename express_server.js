@@ -40,6 +40,18 @@ function generateRandomString() {
 }
 
 
+const urlsForUser = (data, id) => {
+  let results = {};
+  for (let [key, value] of Object.entries(data)) {
+    if(value['userID'] === id) {
+      results[key]=value['longURL'];
+    }
+  }
+  return results; 
+};
+//console.log(urlsForUser(urlDatabase, 'aJ48lW'));
+
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 

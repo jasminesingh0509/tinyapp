@@ -7,10 +7,6 @@ const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 app.use(cookieParser());
 
-// const templateVars = {
-// username: ""
-// };
-
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -24,6 +20,11 @@ const users = {
   }
 };
 
+const urlDatabase = {
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+};
+
 // function to generate random string for short URL. Call it where necessary. 
 function generateRandomString() {
   var result = "";
@@ -35,10 +36,6 @@ function generateRandomString() {
   return result;
 }
 
- const urlDatabase = {
-   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
- };
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -137,7 +134,7 @@ app.post("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   // call randomString to generate short URL
   let randomString = generateRandomString();
-  urlDatabase[randomString] = req.body.longURL;
+  urlDatabase[randomString] = req.body[longURL]; //fix longURL
   res.redirect('/urls/' + randomString); 
 });
 

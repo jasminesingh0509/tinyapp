@@ -14,7 +14,7 @@
       <div class="form-group mb-2">
     </div>
     <!-- condition statement to render if user name is applied or not-->
-    <% if(true){ %>
+    <% if(true){ %> <!-- change back to !username-->
       <form style="padding:10px" action="/login" method="POST">
         <input style="width:200px" type="text" name="username" placeholder="Username"
         id="username">
@@ -23,7 +23,7 @@
     <% } else { %>
       <form style="padding:10px" action="/logout" method="POST">
         <div>
-          <%= username %> 
+          <%= user.email %> 
         </div>
         <button type="Logout" class="btn btn-primary">Logout</button>
       </form>

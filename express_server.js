@@ -39,7 +39,7 @@ function generateRandomString() {
   return result;
 }
 
-
+//the function below loops through the data and checks to see if the value of userID is equal to id. //console.log(urlsForUser(urlDatabase, 'aJ48lW'));
 const urlsForUser = (data, id) => {
   let results = {};
   for (let [key, value] of Object.entries(data)) {
@@ -47,9 +47,10 @@ const urlsForUser = (data, id) => {
       results[key]=value['longURL'];
     }
   }
+  console.log('some info:', results, data, id);
   return results; 
 };
-//console.log(urlsForUser(urlDatabase, 'aJ48lW'));
+
 
 
 const bodyParser = require("body-parser");
@@ -71,9 +72,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { username: "", urls: urlDatabase }; 
   if (req.cookies["user_id"]) {
-    templateVars = { urls: urlDatabase, username: users[req.cookies["user_id"]]};
+    templateVars = { 
+      urls: urlsForUser(urlDatabase, req.cookies["user_id"]), username: users[req.cookies["user_id"]]
+    };
+    console.log(templateVars);
     res.render("urls_index", templateVars); 
   } else {
     res.redirect("/logins");
@@ -140,33 +143,35 @@ app.post("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   // call randomString to generate short URL
   let randomString = generateRandomString();
-  urlDatabase[randomString] = {longURL: urlDatabase[shortURL].longURL, userID: users[req.cookies["user_id"]]}
+  urlDatabase[randomString] = {longURL: req.body.longURL, userID: req.cookies["user_id"]}
   res.redirect('/urls/' + randomString); 
 });
 
 // redirects after delete
 app.post("/urls/:shortURL/delete", (req, res) => {
   let {shortURL} = req.params;
+  /// urls[shorturl].user_id ==== userID: req.cookies["user_id"]
   delete urlDatabase[shortURL];
   res.redirect('/urls'); 
 });
 
 app.post("/login", (req, res) => {
+  let foundUser; 
   for (const user in users) {
-    if (users[user]["email"] !== req.body.email) {
-      res.status(403).send("Email cannot be found");
-    }
-    if (
-      users[user]["email"] === req.body.email &&
-      users[user]["password"] !== req.body.password
-    ) {
-      res.status(403).send("Password does not match");
-    }
     if (users[user]["email"] === req.body.email) {
-      res.cookie("user_id", user);
+      foundUser = users[user];
+      // res.status(403).send("Email cannot be found");
     }
   }
-  res.redirect("/urls");
+  if (
+   foundUser["email"] === req.body.email &&
+    foundUser["password"] !== req.body.password
+  ) {
+    res.status(403).send("Password does not match");
+  } else {
+    res.cookie("user_id", foundUser.id);
+    res.redirect("/urls");
+  }
 });
 
 //redirects after logout

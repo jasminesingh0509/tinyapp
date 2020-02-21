@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080; // default port 8080
+const bcrypt = require('bcrypt');
 
 //MIDDLEWEAR===============================================
 app.set("view engine", "ejs");
@@ -12,12 +13,12 @@ const users = {
   userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("password", 10),
   },
   user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("test", 10),
   }
 };
 
@@ -43,14 +44,12 @@ function generateRandomString() {
 const urlsForUser = (data, id) => {
   let results = {};
   for (let [key, value] of Object.entries(data)) {
-    if(value['userID'] === id) {
-      results[key]=value['longURL'];
+    if (value["userID"] === id) {
+      results[key] = value["longURL"];
     }
   }
-  console.log('some info:', results, data, id);
-  return results; 
+  return results;
 };
-
 
 
 const bodyParser = require("body-parser");
@@ -123,7 +122,7 @@ app.post("/register", (req, res) => {
     }
   }
   let id = generateRandomString();
-  users[id] = { id: id, email: req.body.email, password: req.body.password };
+  users[id] = { id: id, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) };
   res.cookie("user_id", id);
   res.redirect("/urls/");
 });
@@ -149,13 +148,17 @@ app.post("/urls", (req, res) => {
 
 // redirects after delete
 app.post("/urls/:shortURL/delete", (req, res) => {
-  let {shortURL} = req.params;
-  /// urls[shorturl].user_id ==== userID: req.cookies["user_id"]
-  delete urlDatabase[shortURL];
-  res.redirect('/urls'); 
+  let userLinks = urlsForUser(urlDatabase, req.cookies["user_id"]);
+  let shortURL = req.params.shortURL;
+  if (userLinks[shortURL]) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
+  } else {
+    res.send("You are not authorized to delete this. ");
+  }
 });
 
-app.post("/login", (req, res) => {
+app.post("/logins", (req, res) => {
   let foundUser; 
   for (const user in users) {
     if (users[user]["email"] === req.body.email) {
@@ -164,13 +167,13 @@ app.post("/login", (req, res) => {
     }
   }
   if (
-   foundUser["email"] === req.body.email &&
-    foundUser["password"] !== req.body.password
+   foundUser && foundUser["email"] === req.body.email &&
+   bcrypt.compareSync(req.body.password, foundUser["password"])
   ) {
-    res.status(403).send("Password does not match");
-  } else {
     res.cookie("user_id", foundUser.id);
     res.redirect("/urls");
+  } else {
+    res.status(403).send("Password or email are incorrect");
   }
 });
 

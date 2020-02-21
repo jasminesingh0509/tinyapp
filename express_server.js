@@ -17,7 +17,7 @@ app.use(
   })
 );
 
-//GET REQUESTS=======================================================
+//GET REQUESTS==============================================
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -38,7 +38,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls", (req, res) => {
   if (req.session.user_id) {
-    templateVars = {
+    let templateVars = {
       urls: urlsForUser(urlDatabase, req.session.user_id),
       username: users[req.session.user_id]
     };
@@ -74,7 +74,7 @@ app.get("/logins", (req, res) => {
   res.render("logins", templateVars);
 });
 
-//POST REQUESTS======================================================
+//POST REQUESTS==============================================
 
 // Register with unique id, check for unique email, add new user
 app.post("/register", (req, res) => {
@@ -126,12 +126,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/logins", (req, res) => {
-  let foundUser= getUserByEmail(req.body.email, users); 
-  // for (const user in users) {
-  // //   if (users[user]["email"] === req.body.email) {
-  // //     foundUser = users[user];
-  // //   }
-  // // }
+  let foundUser = getUserByEmail(req.body.email, users);
   if (
     foundUser &&
     foundUser["email"] === req.body.email &&

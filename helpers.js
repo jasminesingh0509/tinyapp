@@ -19,20 +19,19 @@ const urlDatabase = {
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 // FUNCTIONS=========================================================
-// function to generate random string for short URL. Call it where necessary.
 function generateRandomString() {
-  var result = "";
-  var characters =
+  const result = "";
+  let characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (var i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {
     result += characters.charAt(Math.floor(Math.random() * 62));
   }
   return result;
 }
 
-//the function below loops through the data and checks to see if the value of userID is equal to id. 
+//loops through the data and checks to see if the value of userID is equal to id. 
 const urlsForUser = (data, id) => {
-  let results = {};
+  const results = {};
   for (let [key, value] of Object.entries(data)) {
     if (value["userID"] === id) {
       results[key] = value["longURL"];

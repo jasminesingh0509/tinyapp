@@ -1,12 +1,18 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080; // default port 8080
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
+const bodyParser = require("body-parser");
 
 //MIDDLEWEAR===============================================
+app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ["hello"],
+}));
 
 //DATABASE=========================================================
 const users = {
@@ -52,8 +58,6 @@ const urlsForUser = (data, id) => {
 };
 
 
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
 
 //GET REQUESTS=======================================================
 app.get("/urls.json", (req, res) => {
@@ -62,8 +66,8 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = { username: ""};
-  if (req.cookies["user_id"]) {
-  templateVars = { urls: urlDatabase, username: users[req.cookies["user_id"]]};
+  if (req.session["user_id"]) {
+  templateVars = { urls: urlDatabase, username: users[req.session["user_id"]]};
   res.render("urls_new", templateVars);
 } else {
   res.redirect("/logins");
@@ -71,11 +75,10 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  if (req.cookies["user_id"]) {
+  if (req.session["user_id"]) {
     templateVars = { 
-      urls: urlsForUser(urlDatabase, req.cookies["user_id"]), username: users[req.cookies["user_id"]]
+      urls: urlsForUser(urlDatabase, req.session["user_id"]), username: users[req.session["user_id"]]
     };
-    console.log(templateVars);
     res.render("urls_index", templateVars); 
   } else {
     res.redirect("/logins");
@@ -90,8 +93,8 @@ app.get("/urls/:shortURL", (req, res) => {
     shortURL,
     longURL: urlDatabase[shortURL].longURL
   };
-  if (req.cookies["user_id"]) {
-    templateVars.username = users[req.cookies["user_id"]];
+  if (req.session["user_id"]) {
+    templateVars.username = users[req.session["user_id"]];
     res.render("urls_show", templateVars);
  } else {
     res.redirect("/logins");
@@ -123,7 +126,7 @@ app.post("/register", (req, res) => {
   }
   let id = generateRandomString();
   users[id] = { id: id, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) };
-  res.cookie("user_id", id);
+  req.session.user_id = id;
   res.redirect("/urls/");
 });
 
@@ -142,19 +145,19 @@ app.post("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   // call randomString to generate short URL
   let randomString = generateRandomString();
-  urlDatabase[randomString] = {longURL: req.body.longURL, userID: req.cookies["user_id"]}
+  urlDatabase[randomString] = {longURL: req.body.longURL, userID: req.session["user_id"]}
   res.redirect('/urls/' + randomString); 
 });
 
 // redirects after delete
 app.post("/urls/:shortURL/delete", (req, res) => {
-  let userLinks = urlsForUser(urlDatabase, req.cookies["user_id"]);
+  let userLinks = urlsForUser(urlDatabase, req.session["user_id"]);
   let shortURL = req.params.shortURL;
   if (userLinks[shortURL]) {
     delete urlDatabase[shortURL];
     res.redirect("/urls");
   } else {
-    res.send("You are not authorized to delete this. ");
+    res.send("You are not authorized to delete this.");
   }
 });
 
@@ -170,7 +173,7 @@ app.post("/logins", (req, res) => {
    foundUser && foundUser["email"] === req.body.email &&
    bcrypt.compareSync(req.body.password, foundUser["password"])
   ) {
-    res.cookie("user_id", foundUser.id);
+    req.session.user_id = foundUser.id;
     res.redirect("/urls");
   } else {
     res.status(403).send("Password or email are incorrect");
@@ -179,7 +182,7 @@ app.post("/logins", (req, res) => {
 
 //redirects after logout
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id', req.body.email);
+  req.session = null; 
   res.redirect('/urls'); 
 });
 

@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 //DATABASE=========================================================
 const users = {
   userRandomID: {
-    id: "aJ48lW",
+    id: "userRandomID",
     email: "user@example.com",
     password: bcrypt.hashSync("password", 10)
   },
@@ -15,12 +15,12 @@ const users = {
 };
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "userRandomID" }
 };
 // FUNCTIONS=========================================================
 function generateRandomString() {
-  const result = "";
+  let result = "";
   let characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < 6; i++) {
@@ -29,7 +29,7 @@ function generateRandomString() {
   return result;
 }
 
-//loops through the data and checks to see if the value of userID is equal to id. 
+//loops through the data and checks to see if the value of userID is equal to id.
 const urlsForUser = (data, id) => {
   const results = {};
   for (let [key, value] of Object.entries(data)) {
@@ -49,6 +49,10 @@ const getUserByEmail = function(email, database) {
   return false;
 };
 
-
-
-module.exports = { generateRandomString, urlsForUser, getUserByEmail, users, urlDatabase };
+module.exports = {
+  generateRandomString,
+  urlsForUser,
+  getUserByEmail,
+  users,
+  urlDatabase
+};

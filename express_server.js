@@ -4,7 +4,13 @@ const PORT = 8080; // default port 8080
 const bcrypt = require("bcrypt");
 const cookieSession = require("cookie-session");
 const bodyParser = require("body-parser");
-const { generateRandomString, urlsForUser, getUserByEmail, users, urlDatabase } = require("./helpers");
+const {
+  generateRandomString,
+  urlsForUser,
+  getUserByEmail,
+  users,
+  urlDatabase
+} = require("./helpers");
 
 //MIDDLEWEAR===============================================
 
@@ -21,6 +27,14 @@ app.use(
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
+});
+
+app.get("/", (req, res) => {
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/logins");
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -65,13 +79,11 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = { username: "" };
-  res.render("register", templateVars);
+  res.render("register");
 });
 
 app.get("/logins", (req, res) => {
-  let templateVars = { username: "" };
-  res.render("logins", templateVars);
+  res.render("logins");
 });
 
 //POST REQUESTS==============================================

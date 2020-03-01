@@ -38,9 +38,11 @@
           <td>
             <!-- Delete botton -->
           </td>
-          <form method="POST" action="/urls/<%= url %>/delete" style="width: 300px; margin: 1em">
-            <button type="Delete" class="btn btn-outline-danger">Delete</button>
-          </form>
+          <td>
+            <form method="POST" action="/urls/<%= url %>/delete" style="width: 300px; margin: 1em">
+              <button type="Delete" class="btn btn-outline-danger">Delete</button>
+            </form>
+          </td>
         </tr>
         <% } %>
       </tbody>

@@ -86,6 +86,12 @@ app.get("/logins", (req, res) => {
   res.render("logins");
 });
 
+//redirects to actual long url website
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL].longURL;
+  res.redirect(longURL);
+});
+
 //POST REQUESTS==============================================
 
 // Register with unique id, check for unique email, add new user

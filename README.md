@@ -24,5 +24,5 @@ TinyApp is a full stack web application built with Node and Express that allows 
 ## Versioning
 1.0.0
 
-## Authors
+## Author
 Jasmine Singh - Lighthouse Labs, 2020
